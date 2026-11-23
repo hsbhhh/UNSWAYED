@@ -1,0 +1,13 @@
+resources:
+  get_data_root: null
+  data_root: null
+  background_root: null
+  interaction_root: null
+  internvideo_root: null
+  internvideo2_root: null
+  weights_root: null
+  clip_checkpoint: null
+  stage2_checkpoint: null
+  internvl_checkpoint: null
+  output_root: null
+

@@ -1,0 +1,97 @@
+{
+  "task": "walker-walk",
+  "trained_checkpoint": "formal_terminal_u252544.pt",
+  "checkpoint_sha256": "4e6eff9ff87c87be2ee651f91fa177dcf8c6206186dd6c0cafdc3867ac933dfd",
+  "training_seed": 0,
+  "model_updates": 252544,
+  "environment_records": 1010176,
+  "terminal_evaluation": {
+    "episodes_per_condition": 2,
+    "policy_decisions_per_episode": 500,
+    "evaluation_seed": 20260830,
+    "action_repeat": 2,
+    "deterministic_actor": true,
+    "domains": [
+      {
+        "domain": "clean",
+        "return_mean": 947.2970106787088,
+        "return_std": 15.643200443196804,
+        "episodes": 2,
+        "episode_steps": 500,
+        "episode_lengths": [
+          500,
+          500
+        ]
+      },
+      {
+        "domain": "seen_davis",
+        "return_mean": 947.4192936304319,
+        "return_std": 0.4315604776950863,
+        "episodes": 2,
+        "episode_steps": 500,
+        "episode_lengths": [
+          500,
+          500
+        ]
+      },
+      {
+        "domain": "unseen_davis",
+        "return_mean": 906.4125346056635,
+        "return_std": 24.162604064989466,
+        "episodes": 2,
+        "episode_steps": 500,
+        "episode_lengths": [
+          500,
+          500
+        ]
+      }
+    ]
+  },
+  "subsequent_evaluation": {
+    "physical_reset_seeds": [
+      1101,
+      1102,
+      1103,
+      1104,
+      1105
+    ],
+    "episodes_per_seed_per_condition": 3,
+    "policy_decisions_per_episode": 500,
+    "trained_model_count": 1,
+    "domains": {
+      "clean": {
+        "mean": 934.613840133345,
+        "seed_std": 24.004660026970175,
+        "episode_std": 41.67205915035561,
+        "ci95": [
+          915.974126467223,
+          952.4763621209433
+        ],
+        "seed_n": 5,
+        "episode_n": 15
+      },
+      "ID": {
+        "mean": 955.7647117483846,
+        "seed_std": 14.921437710751675,
+        "episode_std": 21.02595209644295,
+        "ci95": [
+          944.2937300829393,
+          967.23569341383
+        ],
+        "seed_n": 5,
+        "episode_n": 15
+      },
+      "OOD": {
+        "mean": 922.8576675484161,
+        "seed_std": 40.82200600111729,
+        "episode_std": 73.96201974777023,
+        "ci95": [
+          891.5267654456154,
+          954.1885696512169
+        ],
+        "seed_n": 5,
+        "episode_n": 15
+      }
+    }
+  }
+}

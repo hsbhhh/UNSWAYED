@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "strict_world_model_load": true,
+  "strict_actor_critic_load": true,
+  "world_state_tensors": 68,
+  "behavior_state_tensors": 35,
+  "gradient_updates": 252544,
+  "global_env_steps": 1010176,
+  "checkpoint_sha256": "4e6eff9ff87c87be2ee651f91fa177dcf8c6206186dd6c0cafdc3867ac933dfd",
+  "device": "cpu",
+  "inference_steps": 2,
+  "torch_version": "2.5.1+cpu",
+  "optimizer_constructed": false,
+  "server_downloaded_source_files_verified": 405,
+  "server_downloaded_runtime_files_verified": 2,
+  "python_files_syntax_checked": 282,
+  "entrypoint_help_checks": [
+    "train.py",
+    "eval.py",
+    "tools/configure_paths.py"
+  ],
+  "trained_weights_in_source_release": false,
+  "local_gpu_vlm_forward_tested": false,
+  "full_training_rerun": false,
+  "source_original_git_commit_available": false,
+  "validation_date": "2026-11-23"
+}

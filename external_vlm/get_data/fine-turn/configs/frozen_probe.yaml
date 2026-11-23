@@ -1,0 +1,33 @@
+experiment:
+  name: ball_in_cup_frozen_probe
+  seed: 0
+  output_root: null
+
+resources:
+  get_data_root: null
+  data_root: null
+  background_root: null
+  interaction_root: null
+  internvideo_root: null
+  internvideo2_root: null
+  weights_root: null
+  clip_checkpoint: null
+  stage2_checkpoint: null
+  internvl_checkpoint: null
+  output_root: null
+
+model:
+  variant: InternVideo2-CLIP-1B-224p-f8
+  num_frames: null
+  image_size: null
+  precision: bf16
+  return_patch_tokens: true
+  mock: false
+
+data:
+  background_subdir: pairs/background
+  interaction_subdir: pairs/interaction
+  batch_size: 4
+  num_workers: 4
+  synchronized_transforms: true
+

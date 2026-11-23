@@ -1,0 +1,76 @@
+V5 production baseline
+======================
+Authoritative implementation source (read-only during migration):
+  /root/autodl-tmp/hsb/dreamerv3_vlm/actor_e1_long_stability_u215567_20260904_155611
+
+Protected historical repository (never modified/deleted):
+  /root/autodl-tmp/hsb/dreamerv3_vlm/dreamerv3_vlm_v4
+
+Why the frozen production snapshot is authoritative:
+  The protected V4 repository's behavior.py predates the final E1 pre-clamp
+  scoring implementation. The frozen long-stability source is the code lineage
+  that produced the final u252544 checkpoint.
+
+Migrated production modules
+---------------------------
+  v4/config.py                         -> dreamer_v5/config.py
+  v4/dreamer/*                        -> dreamer_v5/dreamer/*
+  v4/model/*                          -> dreamer_v5/model/*
+  v4/training/{losses,behavior_step,world_model_step,trainer,checkpoint,metrics,synthetic_data}.py
+                                       -> dreamer_v5/training/*
+  v4/pipeline/*                       -> dreamer_v5/pipeline/*
+  v4/envs/{dmc_env,factory,paired_view,davis}.py
+                                       -> dreamer_v5/envs/*
+  v4/semantic/{score_calibration,semantic_lowrank_gaussian,semantic_weighting}.py
+                                       -> dreamer_v5/semantic/*
+  v4/capc/loss.py                     -> dreamer_v5/capc/loss.py
+  v4/vcfa/*                           -> dreamer_v5/vcfa/*
+  v4/vlm/{client,protocol,server,teacher}.py
+                                       -> dreamer_v5/vlm/*
+  v4/counterfactual/*                 -> dreamer_v5/counterfactual/*
+                                       (shape/checkpoint compatibility; disabled by default)
+
+Production-critical behavior preserved
+--------------------------------------
+  encoder + RSSM + reward/continue heads
+  K=4 standard-softmax semantic weighting
+  VGC and three-level MSIR
+  native categorical CAPC with stop-gradient target
+  E1 pre-clamp actor score
+  LaProp + AGC + warmup
+  resident frozen VLM shared-memory protocol
+  replay continuation and full training-state checkpoints
+
+Not migrated into runtime
+-------------------------
+  audits/
+  backups/
+  protocols/
+  historical configs
+  historical launch/monitor/finalize scripts
+  CAPC authorization and calibration_v2
+  CAPC online forensic trainer
+  independent validators and evidence builders
+  actor E2/censored-normal branch and boundary-gradient diagnostics
+  temporal_clip_audit
+  temporal-delta experiment
+  debug forensic dashboards
+  source/checkpoint/dataset hash gates
+  prior outputs, traces, report bundles and historical checkpoints
+
+Intentional external resources (not V4 source dependencies)
+------------------------------------------------------------
+  DAVIS JPEGImages/480p
+  frozen VLM fine-tune checkpoint
+  InternVideo2 base checkpoint
+  fine-turn VLM runtime package
+  installed Python/CUDA/dm-control environment
+
+Compatibility-only values
+-------------------------
+  checkpoint.model_version = v4
+  checkpoint.implementation_revision = v4_kview_standard_softmax_capc_v2
+  payload marker = dreamerv3_vlm_v4
+
+These values permit strict loading of the final trained state_dict. They do not
+import, locate, scan, hash, or execute the V4 source repository.

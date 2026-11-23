@@ -1,0 +1,99 @@
+experiment:
+  name: dmc_patch_relevance_v3_agent_priority
+  seed: 0
+
+resources:
+  get_data_root: null
+  data_root: null
+  background_root: null
+  interaction_root: null
+  internvideo_root: null
+  internvideo2_root: null
+  weights_root: null
+  clip_checkpoint: null
+  stage2_checkpoint: null
+  internvl_checkpoint: null
+  output_root: /autodl-fs/data/hsb/reacher_easy_vlm_finetune
+
+model:
+  variant: InternVideo2-CLIP-1B-224p-f8
+  num_frames: 8
+  image_size: 224
+  precision: bf16
+  return_patch_tokens: true
+  prefer_hook_tokens: true
+  mock: false
+  token_hidden_dim: 768
+  relevance_dropout: 0.05
+  target_grid: [8, 8]
+  pooling: logsumexp
+  freeze_video_encoder: false
+  disable_text_lora: true
+  attention_backend: native_flash
+
+lora:
+  enabled: true
+  rank: 8
+  alpha: 16
+  dropout: 0.05
+  last_n_blocks: 4
+  target_modules: visual_auto
+
+data:
+  pair_root: null
+  manifest_path: null
+  train_ratio: 0.70
+  validation_ratio: 0.15
+  test_ratio: 0.15
+  batch_size: 2
+  eval_batch_size: 2
+  num_workers: 2
+  pin_memory: true
+  mask_dilation: 1
+  synthetic_if_empty: false
+
+loss:
+  bce_weight: 1.0
+  dice_weight: 0.75
+  object_weight: 0.0
+  consistency_weight: 0.5
+  hard_background_weight: 1.0
+  temporal_weight: 0.03
+  focal_gamma: 2.0
+  focal_alpha: 0.75
+  hard_negative_quantile: 0.85
+  agent_coverage_weight: 1.00
+  target_coverage_weight: 0.01
+  balance_weight: 0.25
+  agent_margin: 0.75
+  target_margin: 0.70
+  balance_delta: 0.05
+
+training:
+  stage: stage2
+  epochs: 2
+  max_steps: 792
+  sanity_max_steps: 150
+  sanity_max_samples: 320
+  gradient_accumulation_steps: 1
+  log_interval: 10
+  eval_interval: 1
+  save_interval: 1
+  min_resume_coverage: 0.95
+  min_init_coverage: 0.95
+  strict_init_coverage: true
+
+optimizer:
+  name: adamw
+  head_lr: 3.0e-4
+  lora_lr: 2.0e-5
+  weight_decay: 0.05
+
+device:
+  device: cuda
+  amp: true
+  amp_dtype: bf16
+
+export:
+  dreamer_grid: [8, 8]
+  kind: internvideo2_dmc_task_relevance_qsem_teacher

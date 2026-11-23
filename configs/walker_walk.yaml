@@ -1,0 +1,355 @@
+project:
+  name: dreamerv3_vlm_v5
+  implementation_revision: v4_kview_standard_softmax_capc_v2
+model:
+  name: dreamerv3_vlm_v5
+  image_size: 64
+  action_dim: 6
+  stem_channels: 64
+  encoder_embed_dim: 256
+  semantic_score_calibration:
+    mode: identity_probability
+    expected_domain: probability
+    expected_min: 0.0
+    expected_max: 1.0
+    fail_on_domain_violation: true
+    clamp: true
+    per_frame_minmax: false
+    apply_extra_sigmoid: false
+  world_model_loss:
+    enabled: true
+    kl_free: 1.0
+    dyn_weight: 1.0
+    rep_weight: 0.1
+    reward_weight: 1.0
+    continue_weight: 1.0
+  vlm_gaussian_consensus:
+    enabled: true
+    prediction_horizons:
+    - 0
+    patch_count: 64
+    patch_feature_dim: 64
+    hidden_dim: 256
+    weight_mode: configured
+    weight: 0.03125
+    sigma_min: 0.05
+    sigma_vlm: 0.5
+    tau_s: 0.21875
+    sigma_max: 10.0
+    eps: 1.0e-06
+    feature_normalize: false
+    base_variance: 0.25
+    semantic_score_in_variance: false
+    semantic_weight_in_variance: false
+    num_views: 4
+  msir:
+    enabled: true
+    training_enabled: true
+    target_mode: k_view_gaussian_mean
+    pyramid_levels: 3
+    level_weights:
+    - 1.0
+    - 0.5
+    - 0.25
+    weight: 4.0
+    sigma_min: 0.03
+    sigma_vlm: 0.3
+    tau_s: 0.21875
+    sigma_max: 10.0
+    eps: 1.0e-06
+    base_variance: 0.09
+    semantic_score_in_precision: false
+    semantic_weight_in_precision: false
+    use_shared_semantic_weight: true
+    num_views: 4
+  num_views: 4
+  semantic_weighting:
+    enabled: true
+    mode: standard_softmax
+    temperature: 1.0
+    eps: 1.0e-06
+    aggregate: mean
+    mass_normalize: true
+    expected_mean_weight: 1.0
+    num_views: 4
+  num_views_source: model.num_views
+r2_rssm:
+  stoch: 32
+  deter: 256
+  hidden: 512
+  discrete: 32
+  img_layers: 2
+  obs_layers: 1
+  dyn_layers: 1
+  blocks: 8
+  act: SiLU
+  unimix_ratio: 0.01
+  initial: zeros
+  device: cuda:0
+env:
+  task: dmc_walker_walk
+  backend: dmc
+  env_num: 8
+  image_size: 64
+  action_repeat: 2
+  camera_id: 0
+  dmc:
+    domain: walker
+    task_name: walk
+    segmentation_failure_policy: error
+  davis:
+    backend: davis
+    root: /root/autodl-tmp/hsb/DAVIS/JPEGImages/480p
+    temporal_stride: 1
+    seed: 0
+    end_policy: loop
+    require_distinct_b_views: true
+    allowed_video_ids:
+    - bear
+    - bike-packing
+    - blackswan
+    - bmx-bumps
+    - bmx-trees
+    - boat
+    - boxing-fisheye
+    - breakdance
+    - breakdance-flare
+    - bus
+    - camel
+    - car-roundabout
+    - car-shadow
+    - cat-girl
+    - classic-car
+    - color-run
+    - cows
+    - dance-jump
+    - dance-twirl
+    - dancing
+    - disc-jockey
+    - dog-agility
+    - dog-gooses
+    - dogs-jump
+    - drift-chicane
+    - drift-straight
+    - drift-turn
+    - drone
+    - flamingo
+    - goat
+    - gold-fish
+    - hike
+    - hockey
+    - horsejump-high
+    - horsejump-low
+    - judo
+    - kid-football
+    - kite-surf
+    - lab-coat
+    - libby
+    - lindy-hop
+    - loading
+    - longboard
+    - lucia
+    - mallard-fly
+    - mallard-water
+    - motocross-bumps
+    - motorbike
+    - night-race
+    - paragliding
+    - parkour
+    - pigs
+    - planes-water
+    - rallye
+    - rhino
+    - schoolgirls
+    - scooter-black
+    - scooter-board
+    - sheep
+    - shooting
+    - skate-park
+    - snowboard
+    - soapbox
+    - stroller
+    - stunt
+    - surf
+    - swing
+    - tractor-sand
+    - train
+    - tuk-tuk
+    - upside-down
+    - walking
+  synthetic:
+    episode_length: 64
+replay:
+  schema_version: v4_kview_v2
+  temporal_contract: obs_t_with_incoming_action
+  capacity: 100000
+  persist_replay: true
+  require_b1_b2_raw_pixels: false
+  require_counterfactual_raw_pixels: true
+  num_views_source: model.num_views
+counterfactual:
+  enabled: false
+  views: 4
+  view_ids:
+  - view_0
+  - view_1
+  - view_2
+  - view_3
+  temporal_protocol_version: v7_independent_k_view_ring
+  pairing_contract: same_physical_state_same_camera_background_only
+  background_stream_policy: continuous_per_env_view
+  center:
+    mode: arithmetic_mean
+    epsilon: 1.0e-06
+    max_iters: 32
+    convergence_tol: 1.0e-05
+  nuisance:
+    operator: legacy_gaussian
+    epsilon: 1.0e-06
+    eigen_epsilon: 1.0e-07
+    rank_tolerance: 1.0e-05
+  task_relevance:
+    mode: none
+    update_period: 8
+    ema_momentum: 0.95
+    epsilon: 1.0e-06
+  budget:
+    epsilon: 1.0e-06
+  robust_vgc:
+    enabled: false
+    weight: 0.015625
+    charbonnier_epsilon: 0.001
+  psab:
+    enabled: false
+    epsilon: 1.0e-12
+  views_source: model.num_views
+external_vlm:
+  enabled: true
+  backend: resident
+  shared_memory_name:
+  clip_len: 8
+  input_height: 64
+  input_width: 64
+  grid_size: 8
+  patch_count: 64
+  feature_dim: 64
+  view_num: 4
+  strict_per_frame: true
+  startup_timeout_sec: 600.0
+  strict_timeout_sec: 300.0
+  strict_poll_interval_ms: 2.0
+  heartbeat_timeout_sec: 30.0
+  require_server: true
+  online_stride: 1
+  cache_max_age: 0
+  cache_fallback: error
+  task_name: walker_walk
+  dtype: bfloat16
+  internvideo2_backend: native_flash
+  python_executable: /root/autodl-tmp/hsb/conda_envs/dreamerv3_vlm_flash/bin/python3.11
+  micro_batch_size: 8
+  max_batch_wait_ms: 3
+  q_sem_only: true
+  dense_ordered_patch_features: true
+  reference_feature_enabled: false
+  view_num_source: model.num_views
+training:
+  batch_size: 16
+  sequence_length: 64
+  steps: 1010000
+  lr: 4.0e-05
+  seed: 0
+  device: cuda:0
+  train_ratio: 256
+  checkpoint_every: 5000
+  log_every: 5000
+optimizer:
+  type: laprop
+  gradient_processing: agc_only
+  beta1: 0.9
+  beta2: 0.999
+  eps: 1.0e-20
+  weight_decay: 0.0
+  agc: 0.3
+  pmin: 0.001
+  warmup_updates: 1000
+behavior:
+  enabled: true
+  policy_backend: dreamer
+  imag_horizon: 15
+  horizon: 333
+  lambda: 0.95
+  actor_entropy: 0.0003
+  lr: 4.0e-05
+  actor_hidden: 256
+  actor_layers: 3
+  actor_outscale: 0.01
+  value_hidden: 256
+  value_layers: 3
+  value_bins: 255
+  value_outscale: 0.0
+  repval_weight: 0.3
+  actor_min_std: 0.1
+  actor_max_std: 1.0
+  slow_target_update: 1
+  slow_target_fraction: 0.02
+  return_ema_alpha: 0.01
+pipeline:
+  mode: synchronous_shard
+  shard:
+    collect_steps_per_env: 64
+    transitions_per_shard: 512
+    max_collected_shards: 2
+    max_ready_shards: 4
+    retain_ready_shards: 4
+  vlm:
+    start_managed_server: true
+  checkpoint:
+    save_numbered: true
+    persist_shards: true
+checkpoint:
+  model_version: v4
+  implementation_revision: v4_kview_standard_softmax_capc_v2
+  strict_model_load: true
+  reject_legacy_without_v4_marker: true
+  keep_last_n: 3
+paths:
+  davis_root: /root/autodl-tmp/hsb/DAVIS/JPEGImages/480p
+  vlm_checkpoint: /autodl-fs/data/hsb/walker_vlm_finetune/dmc_patch_relevance_v1/stage2/best.pt
+  internvideo2_base_checkpoint: /autodl-fs/data/models/internvideo2/InternVideo2-CLIP-1B-224p-f8/1B_clip.pth
+  fine_turn_root: /root/autodl-tmp/hsb/get_data/fine-turn
+capc:
+  enabled: true
+  implementation: native_rssm_kview_categorical_v1
+  formula: kl_stopgrad_mean_posterior_to_native_prior
+  probability_semantics: rssm_get_dist_base_dist_probs_with_unimix
+  target_stopgrad: true
+  views: 4
+  eps: 1.0e-08
+  weight: 3.0
+
+# Public ablation controls. They only affect loss aggregation, never shapes.
+ablation:
+  use_vgc: true
+  use_msir: true
+  use_capc: true
+  lambda_vgc: 0.03125
+  lambda_msir: 4.0
+  lambda_capc: 3.0
+
+logging:
+  tensorboard: true
+  behavior_safety_stop: false
+  actor_health:
+    saturation_warn: 0.95
+    std_warn: 0.95
+
+evaluation:
+  episodes: 10
+  episode_steps: 1000
+  split_file: configs/davis_splits.json
+
+debug:
+  enabled: false
+  every_updates: 5000
+  samples: 1

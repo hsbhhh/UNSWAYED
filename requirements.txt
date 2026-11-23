@@ -1,0 +1,7 @@
+numpy
+PyYAML
+torch
+Pillow
+dm-control
+tensorboard
+imageio

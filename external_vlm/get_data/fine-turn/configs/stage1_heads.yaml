@@ -1,0 +1,80 @@
+experiment:
+  name: ball_in_cup_internvideo2_heads
+  seed: 0
+  output_root: null
+
+resources:
+  get_data_root: null
+  data_root: null
+  background_root: null
+  interaction_root: null
+  internvideo_root: null
+  internvideo2_root: null
+  weights_root: null
+  clip_checkpoint: null
+  stage2_checkpoint: null
+  internvl_checkpoint: null
+  output_root: null
+
+model:
+  variant: InternVideo2-CLIP-1B-224p-f8
+  num_frames: null
+  image_size: null
+  precision: bf16
+  freeze_video_encoder: true
+  freeze_text_encoder: true
+  return_patch_tokens: true
+  mock: false
+
+task:
+  text: >
+    Catch the ball in the cup. Focus on the ball, cup opening,
+    their relative motion, alignment, and possible contact.
+
+data:
+  background_subdir: pairs/background
+  interaction_subdir: pairs/interaction
+  train_ratio: 0.70
+  validation_ratio: 0.15
+  test_ratio: 0.15
+  batch_size: 4
+  num_workers: 4
+  persistent_workers: true
+  pin_memory: true
+  synchronized_transforms: true
+
+loss:
+  background_weight: 1.0
+  background_map_weight: 0.5
+  interaction_weight: 0.25
+  interaction_rank_weight: 0.5
+  region_weight: 2.0
+  dice_weight: 0.5
+  temporal_weight: 0.5
+  rank_margin: 0.2
+  interaction_margin: 0.2
+
+training:
+  stage: heads
+  epochs: 3
+  gradient_accumulation_steps: 1
+  log_interval: 20
+  eval_interval: 1
+  save_interval: 1
+  gradient_checkpointing: false
+  torch_compile: false
+
+optimizer:
+  name: adamw
+  head_lr: 3.0e-4
+  weight_decay: 0.05
+
+scheduler:
+  name: cosine
+  warmup_ratio: 0.1
+
+device:
+  device: cuda
+  amp: true
+  amp_dtype: bf16
+

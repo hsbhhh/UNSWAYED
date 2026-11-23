@@ -1,0 +1,28 @@
+{
+  "train_video_ids": [
+    "bear", "bike-packing", "blackswan", "bmx-bumps", "bmx-trees", "boat",
+    "boxing-fisheye", "breakdance", "breakdance-flare", "bus", "camel",
+    "car-roundabout", "car-shadow", "cat-girl", "classic-car", "color-run",
+    "cows", "dance-jump", "dance-twirl", "dancing", "disc-jockey",
+    "dog-agility", "dog-gooses", "dogs-jump", "drift-chicane", "drift-straight",
+    "drift-turn", "drone", "flamingo", "goat", "gold-fish", "hike", "hockey",
+    "horsejump-high", "horsejump-low", "judo", "kid-football", "kite-surf",
+    "lab-coat", "libby", "lindy-hop", "loading", "longboard", "lucia",
+    "mallard-fly", "mallard-water", "motocross-bumps", "motorbike", "night-race",
+    "paragliding", "parkour", "pigs", "planes-water", "rallye", "rhino",
+    "schoolgirls", "scooter-black", "scooter-board", "sheep", "shooting",
+    "skate-park", "snowboard", "soapbox", "stroller", "stunt", "surf", "swing",
+    "tractor-sand", "train", "tuk-tuk", "upside-down", "walking"
+  ],
+  "seen_eval_video_ids": [
+    "boat", "bus", "car-shadow", "dance-jump", "dance-twirl", "drift-chicane",
+    "flamingo", "horsejump-low", "judo", "parkour", "planes-water", "rhino",
+    "schoolgirls", "skate-park", "stunt", "surf", "swing", "train"
+  ],
+  "unseen_eval_video_ids": [
+    "car-turn", "crossing", "dog", "dogs-scale", "elephant", "india",
+    "kite-walk", "koala", "lady-running", "mbike-trick", "miami-surf",
+    "motocross-jump", "paragliding-launch", "rollerblade", "scooter-gray",
+    "soccerball", "tennis", "varanus-cage"
+  ]
+}
