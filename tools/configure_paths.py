@@ -21,7 +21,7 @@ def main():
         "davis_root": args.davis_root.expanduser().resolve(),
         "vlm_checkpoint": args.vlm_checkpoint.expanduser().resolve(),
         "internvideo2_base_checkpoint": args.base_checkpoint.expanduser().resolve(),
-        "fine_turn_root": ROOT / "external_vlm/get_data/fine-turn",
+        "fine_turn_root": ROOT / "third_party/vlm_runtime/relevance",
     }
     for name, path in resources.items():
         if not path.exists():
@@ -39,7 +39,7 @@ def main():
     args.output.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
     print(f"Created {args.output.resolve()}")
     print("Set these variables in the environment used by the VLM process:")
-    print(f"INTERNVIDEO2_ROOT={ROOT / 'external_vlm/InternVideo/InternVideo2'}")
+    print(f"INTERNVIDEO2_ROOT={ROOT / 'third_party/InternVideo/InternVideo2'}")
     print(f"INTERNVIDEO2_WEIGHTS_ROOT={resources['internvideo2_base_checkpoint'].parent}")
     print(f"INTERNVIDEO2_CLIP_CHECKPOINT={resources['internvideo2_base_checkpoint']}")
 

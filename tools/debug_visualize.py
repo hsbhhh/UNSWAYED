@@ -10,22 +10,22 @@ import torch
 import torch.nn.functional as F
 
 
-from dreamer_v5.config import load_config
-from dreamer_v5.model.world_model import V4WorldModel
-from dreamer_v5.semantic.semantic_lowrank_gaussian import (
+from unswayed.config import load_config
+from unswayed.model.world_model import WorldModel
+from unswayed.semantic.semantic_lowrank_gaussian import (
     k_view_laplacian_pyramid,
     laplacian_pyramid,
     prepare_k_view_reconstruction_images,
     prepare_reconstruction_image,
 )
-from dreamer_v5.semantic.semantic_weighting import semantic_weighting_from_batch
-from dreamer_v5.training.checkpoint import load_checkpoint
-from dreamer_v5.training.losses import compute_world_model_losses
-from dreamer_v5.training.trainer import ProductionTrainer
+from unswayed.semantic.semantic_weighting import semantic_weighting_from_batch
+from unswayed.training.checkpoint import load_checkpoint
+from unswayed.training.losses import compute_world_model_losses
+from unswayed.training.trainer import ProductionTrainer
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Export lightweight V5 K-view/model visualizations.")
+    parser = argparse.ArgumentParser(description="Export lightweight UNSWAYED K-view/model visualizations.")
     parser.add_argument("--config", default="configs/walker_walk.yaml")
     parser.add_argument("--records")
     parser.add_argument("--checkpoint", required=True)
@@ -72,7 +72,7 @@ def main() -> int:
         raise ValueError(f"records contain K={count}, config requires K={int(config.model.num_views)}")
 
     device = torch.device(args.device)
-    model = V4WorldModel(config).to(device).eval()
+    model = WorldModel(config).to(device).eval()
     load_report = load_checkpoint(
         args.checkpoint,
         config=config,

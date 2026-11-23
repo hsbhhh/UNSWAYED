@@ -11,9 +11,9 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from dreamer_v5.config import to_config_node
-from dreamer_v5.dreamer.behavior import DreamerBehavior
-from dreamer_v5.model.world_model import V4WorldModel
+from unswayed.config import to_config_node
+from unswayed.dreamer.behavior import DreamerBehavior
+from unswayed.model.world_model import WorldModel
 
 
 def main():
@@ -27,7 +27,7 @@ def main():
     cfg = to_config_node(copy.deepcopy(payload["config"]))
     cfg.training.device = str(device)
     cfg.r2_rssm.device = str(device)
-    world = V4WorldModel(cfg).to(device).eval().requires_grad_(False)
+    world = WorldModel(cfg).to(device).eval().requires_grad_(False)
     behavior = DreamerBehavior(cfg, belief_dim=world.belief_dim, action_dim=world.action_dim, device=device)
     behavior.to(device).eval().requires_grad_(False)
     world.load_state_dict(payload["model"], strict=True)

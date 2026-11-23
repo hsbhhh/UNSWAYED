@@ -1,8 +1,8 @@
 project:
-  name: dreamerv3_vlm_v5
+  name: unswayed
   implementation_revision: v4_kview_standard_softmax_capc_v2
 model:
-  name: dreamerv3_vlm_v5
+  name: unswayed
   image_size: 64
   action_dim: 6
   stem_channels: 64
@@ -317,7 +317,7 @@ paths:
   davis_root: /root/autodl-tmp/hsb/DAVIS/JPEGImages/480p
   vlm_checkpoint: /autodl-fs/data/hsb/walker_vlm_finetune/dmc_patch_relevance_v1/stage2/best.pt
   internvideo2_base_checkpoint: /autodl-fs/data/models/internvideo2/InternVideo2-CLIP-1B-224p-f8/1B_clip.pth
-  fine_turn_root: /root/autodl-tmp/hsb/get_data/fine-turn
+  fine_turn_root: third_party/vlm_runtime/relevance
 capc:
   enabled: true
   implementation: native_rssm_kview_categorical_v1

@@ -13,11 +13,11 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parent
 
-from dreamer_v5.config import load_config
-from dreamer_v5.dreamer.behavior import DreamerBehavior
-from dreamer_v5.envs.factory import create_env, create_paired_view_generator
-from dreamer_v5.model import V4WorldModel
-from dreamer_v5.training.checkpoint import load_checkpoint, write_checkpoint_report
+from unswayed.config import load_config
+from unswayed.dreamer.behavior import DreamerBehavior
+from unswayed.envs.factory import create_env, create_paired_view_generator
+from unswayed.model import WorldModel
+from unswayed.training.checkpoint import load_checkpoint, write_checkpoint_report
 
 
 def main() -> int:
@@ -33,7 +33,7 @@ def main() -> int:
     config = load_config(args.config, _build_overrides(args))
     allowed_video_ids = _domain_video_ids(config, args.domain)
     device = torch.device(args.device)
-    model = V4WorldModel(config).to(device)
+    model = WorldModel(config).to(device)
     behavior = DreamerBehavior(
         config,
         belief_dim=int(model.belief_dim),
@@ -75,7 +75,7 @@ def main() -> int:
 def evaluate_checkpoint(
     *,
     config,
-    model: V4WorldModel,
+    model: WorldModel,
     behavior: DreamerBehavior,
     checkpoint_report: dict[str, Any],
     output_dir: Path,
@@ -182,7 +182,7 @@ def evaluate_checkpoint(
 def _run_episode(
     *,
     config,
-    model: V4WorldModel,
+    model: WorldModel,
     behavior: DreamerBehavior,
     output_dir: Path,
     env_backend: str,
@@ -572,7 +572,7 @@ def _append_eval_csv(path: Path, summary: dict[str, Any], checkpoint: Path) -> N
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Evaluate an independent V5 checkpoint.")
+    parser = argparse.ArgumentParser(description="Evaluate UNSWAYED.")
     parser.add_argument("--config", default="configs/walker_walk.yaml")
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--output-dir")

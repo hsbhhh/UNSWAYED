@@ -8,9 +8,9 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from dreamer_v5.config import load_config
-from dreamer_v5.dreamer.behavior import ACTOR_VARIANT
-from dreamer_v5.training import ProductionTrainer
+from unswayed.config import load_config
+from unswayed.dreamer.behavior import ACTOR_VARIANT
+from unswayed.training import ProductionTrainer
 
 
 def main() -> int:
@@ -30,7 +30,7 @@ def main() -> int:
     )
 
     def request_stop(signum, _frame):
-        print(f"[V5] received signal {signum}; saving at the next slice boundary", flush=True)
+        print(f"[UNSWAYED] received signal {signum}; saving at the next slice boundary", flush=True)
         trainer.request_stop()
 
     signal.signal(signal.SIGINT, request_stop)
@@ -39,7 +39,7 @@ def main() -> int:
         trainer.debug_once(checkpoint=args.resume, collect_steps_per_env=int(args.debug_steps))
     state = trainer.train(total_env_steps=args.steps, resume=args.resume)
     print(
-        f"[V5] finished env_step={state.global_env_steps} update={state.gradient_updates} "
+        f"[UNSWAYED] finished env_step={state.global_env_steps} update={state.gradient_updates} "
         f"checkpoint={output / 'checkpoints' / 'latest.pt'}",
         flush=True,
     )
@@ -98,7 +98,7 @@ def _print_startup(config, output: Path, resume: str | None) -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Train the independent DreamerV3-VLM V5 model.")
+    parser = argparse.ArgumentParser(description="Train UNSWAYED.")
     parser.add_argument("--config", default="configs/walker_walk.yaml")
     parser.add_argument("--output", required=True)
     parser.add_argument("--resume")
